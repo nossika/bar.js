@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>float.js - demo</title>
+    <title>bar.js - demo</title>
     <style>
         *{
             padding: 0; margin: 0; border: none; outline: none;  }
@@ -113,6 +113,12 @@
     width: 30px;
     height: 150px;
 }
+.dot1{
+    width: 12px;
+    height: 24px;
+    background: red;
+    border-radius: 5px;
+}
 </style>
 </head>
 <body>
@@ -123,23 +129,23 @@
 <script src="./bar.min.js"><\/script>
 <script>
 let bar1 = new Bar(document.querySelector('#bar1'));
-bar1.elem.dot.style.cssText = 'width: 12px;height: 24px; background: red; border-radius: 5px;';
+bar1.elem.dot.className = 'dot1';
 bar1.render();
-bar1.on_change = (value, type) => {
+bar1.on('change', (value, type) => {
     document.querySelector('#value1').innerText = \`bar1 - value:\${value}, type:\${type}\`;
-}
+});
 let bar2 = new Bar(document.querySelector('#bar2'), {
     default: 0.2,
 });
 bar2.elem.fill.style.cssText = 'background: red';
 bar2.render();
-bar2.on_change = (value, type) => {
+bar2.on('change', (value, type) => {
     document.querySelector('#value2').innerText = \`bar2 - value:\${value}, type:\${type}\`;
-}
+});
 let auto_increase = () => {
     if(bar2.value >= 1) return;
-    bar2.value += 0.01;
-    setTimeout(auto_increase, 20);
+    bar2.value += 0.005;
+    setTimeout(auto_increase, 10);
 }
 auto_increase();
 <\/script>

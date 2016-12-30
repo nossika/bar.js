@@ -48,7 +48,7 @@
             };
             let on_mousemove = (e) => {
                 let value = _origin.value + ((this._ori === 'x' ? e.clientX  - _origin.client : _origin.client - e.clientY)) / (this._bar_len - (!this._inner_mode ? 0 : this._dot_r * 2));
-                this.set_value(value, 'drag');
+                this._set_value(value, 'drag');
             };
             let on_mouseup = (e) => {
                 document.removeEventListener('mousemove', on_mousemove);
@@ -67,21 +67,21 @@
                 }
                 let e_offset = this._ori === 'x' ? offset_x : offset_y;
                 let value = !this._inner_mode ? e_offset / this._bar_len : (e_offset - this._dot_r) / (this._bar_len - this._dot_r * 2);
-                this.set_value(value, 'click');
+                this._set_value(value, 'click');
                 on_mousedown(e);
             });
 
             this.elem = {dot, wrapper, fill};
-            this.on_change = null;
+            this._on = {};
             this.render();
         }
-        set_value (value, type) {
+        _set_value (value, type) {
             if(Object.prototype.toString.call(value) !== '[object Number]') return;
             value = value > 1 ? 1 : (value < 0 ? 0 : value);
             this.elem.dot.style[this._ori === 'x' ? 'left' : 'bottom'] = `calc(${value * 100 * (!this._inner_mode ? 1 : (1 - this._dot_r * 2 / this._bar_len))}% - ${!this._inner_mode ? this._dot_r : 0}px)`;
             this.elem.fill.style[this._ori === 'x' ? 'width' : 'height'] = `${value*100}%`;
             if(this._value !== value) {
-                this.on_change && this.on_change(value, type);
+                this._on['change'] && this._on['change'](value, type);
             }
             this._value = value;
         };
@@ -92,19 +92,23 @@
             wrapper_style.width = wrapper_style.height = '100%';
             wrapper_style.padding = wrapper_style.margin = '0';
             let fill_style = this.elem.fill.style;
+            fill_style.display = this._hide_fill ? 'none' : 'block';
             fill_style.position = 'absolute';
             fill_style.width = fill_style.height = '100%';
             fill_style.left = fill_style.bottom = '0';
             fill_style.padding = fill_style.margin = '0';
-            fill_style.display = this._hide_fill ? 'none' : 'block';
             let dot_style = this.elem.dot.style;
+            dot_style.display = this._hide_dot ? 'none' : 'block';
             dot_style.position = 'absolute';
             dot_style.left = `calc(50% - ${this.elem.dot.offsetWidth / 2}px)`;
             dot_style.bottom = `calc(50% - ${this.elem.dot.offsetHeight / 2}px)`;
-            dot_style.display = this._hide_dot ? 'none' : 'block';
             this._dot_r = (this._ori === 'x' ? this.elem.dot.offsetWidth : this.elem.dot.offsetHeight) / 2;
             this._bar_len = (this._ori === 'x' ? this.elem.wrapper.offsetWidth : this.elem.wrapper.offsetHeight);
-            this.set_value(this._value, 'render');
+            this._set_value(this._value, 'render');
+        }
+        on (event, handler) {
+            if(typeof handler !== 'function') return;
+            this._on[event] = handler;
         }
         enable () {
             this._disabled = false;
@@ -129,7 +133,7 @@
             this.render();
         }
         set value (value) {
-            this.set_value(value, 'set')
+            this._set_value(value, 'set')
         }
         get value () {
             return this._value;
