@@ -20,6 +20,7 @@
             this._hide_dot = config.hide_dot || false;
             this._hide_fill = config.hide_fill || false;
             this._disabled = config.disabled || false;
+            this._precision = config.precision || 2;
 
             let wrapper = document.createElement('div');
 
@@ -78,6 +79,7 @@
         _set_value (value, type) {
             if(Object.prototype.toString.call(value) !== '[object Number]') return;
             value = value > 1 ? 1 : (value < 0 ? 0 : value);
+            value = +value.toFixed(this._precision);
             this.elem.dot.style[this._ori === 'x' ? 'left' : 'bottom'] = `calc(${value * 100 * (!this._inner_mode ? 1 : (1 - this._dot_r * 2 / this._bar_len))}% - ${!this._inner_mode ? this._dot_r : 0}px)`;
             this.elem.fill.style[this._ori === 'x' ? 'width' : 'height'] = `${value*100}%`;
             if(this._value !== value) {

@@ -110,12 +110,17 @@
 }
 #bar2
 {
-    width: 30px;
-    height: 150px;
+    width: 250px;
+    height: 30px;
+}
+#bar3
+{
+    width: 16px;
+    height: 200px;
 }
 .dot1{
-    width: 12px;
-    height: 24px;
+    width: 20px;
+    height: 26px;
     background: red;
     border-radius: 5px;
 }
@@ -126,17 +131,23 @@
 <div id="value1"></div>
 <div id="bar2" class="bar"></div>
 <div id="value2"></div>
+<div id="bar3" class="bar"></div>
+<div id="value3"></div>
 <script src="./bar.min.js"><\/script>
 <script>
-let bar1 = new Bar(document.querySelector('#bar1'));
+
+//selector
+let bar1 = new Bar(document.querySelector('#bar1'), {
+    default: 0.2,
+});
 bar1.elem.dot.className = 'dot1';
 bar1.render();
 bar1.on('change', (value, type) => {
     document.querySelector('#value1').innerText = \`bar1 - value:\${value}, type:\${type}\`;
 });
-let bar2 = new Bar(document.querySelector('#bar2'), {
-    default: 0.2,
-});
+
+//progress-bar
+let bar2 = new Bar(document.querySelector('#bar2'));
 bar2.elem.fill.style.cssText = 'background: red';
 bar2.render();
 bar2.on('change', (value, type) => {
@@ -144,10 +155,21 @@ bar2.on('change', (value, type) => {
 });
 let auto_increase = () => {
     if(bar2.value >= 1) return;
-    bar2.value += 0.005;
+    bar2.value += 0.01;
     setTimeout(auto_increase, 10);
 }
 auto_increase();
+
+//scroll-bar
+let bar3 = new Bar(document.querySelector('#bar3'), {
+    inner_mode: true
+});
+bar3.elem.dot.style.cssText = 'width: 100%; height: 40px; background: red';
+bar3.render();
+bar3.on('change', (value, type) => {
+    document.querySelector('#value3').innerText = \`bar3 - value:\${value}, type:\${type}\`;
+});
+
 <\/script>
 </body>
 </html>
