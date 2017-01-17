@@ -1,8 +1,8 @@
 (factory => {
-    let root = (typeof self == 'object' && self.self === self && self) ||
-        (typeof global == 'object' && global.global === global && global);
+    let root = (typeof self === 'object' && self.self === self && self) ||
+        (typeof global === 'object' && global.global === global && global);
     if (typeof define === 'function' && define.amd) {
-        define([], ()=> {
+        define([], () => {
             root.Bar = factory();
         });
     } else if (typeof exports === 'object') {
@@ -12,6 +12,7 @@
     }
 })(() => {
     class Bar {
+
         constructor (container, config = {}) {
             if(!(container instanceof HTMLElement)) return {};
             this._value = config.default || 0;
@@ -34,11 +35,11 @@
 
             let _origin = {
                 client: 0,
-                value: 0
+                value: 0,
             };
 
             let on_mousedown = (e) => {
-                if(this._disabled) return;
+                if (this._disabled) return;
                 _origin.client = this._ori === 'x' ? e.clientX : e.clientY;
                 _origin.value = this._value;
                 document.addEventListener('mousemove', on_mousemove);
@@ -47,10 +48,17 @@
                 e.stopPropagation();
                 return false;
             };
+
             let on_mousemove = (e) => {
-                let value = _origin.value + ((this._ori === 'x' ? e.clientX  - _origin.client : _origin.client - e.clientY)) / (this._bar_len - (!this._inner_mode ? 0 : this._dot_r * 2));
+                let value = _origin.value +
+                    ((this._ori === 'x'
+                    ? e.clientX  - _origin.client
+                    : _origin.client - e.clientY)) / (this._bar_len - (!this._inner_mode
+                        ? 0
+                        : this._dot_r * 2));
                 this._set_value(value, 'drag');
             };
+
             let on_mouseup = (e) => {
                 document.removeEventListener('mousemove', on_mousemove);
                 document.removeEventListener('mouseup', on_mouseup);
@@ -58,10 +66,10 @@
 
             dot.addEventListener('mousedown', on_mousedown);
             wrapper.addEventListener('mousedown', (e) => {
-                if(this._disabled) return;
+                if (this._disabled) return;
                 let [offset_x, offset_y] = [e.offsetX, this._bar_len - e.offsetY];
                 let target = e.target;
-                while(target !== wrapper){
+                while (target !== wrapper) {
                     offset_x += target.offsetLeft;
                     offset_y -= target.offsetTop;
                     target = target.parentNode;
@@ -76,72 +84,94 @@
             this._on = {};
             this.render();
         }
+
         _set_value (value, type) {
-            if(Object.prototype.toString.call(value) !== '[object Number]') return;
+            if (Object.prototype.toString.call(value) !== '[object Number]') return;
             value = value > 1 ? 1 : (value < 0 ? 0 : value);
             value = +value.toFixed(this._precision);
             this.elem.dot.style[this._ori === 'x' ? 'left' : 'bottom'] = `calc(${value * 100 * (!this._inner_mode ? 1 : (1 - this._dot_r * 2 / this._bar_len))}% - ${!this._inner_mode ? this._dot_r : 0}px)`;
             this.elem.fill.style[this._ori === 'x' ? 'width' : 'height'] = `${value*100}%`;
-            if(this._value !== value) {
+            if (this._value !== value) {
                 this._on['change'] && this._on['change'](value, type);
             }
             this._value = value;
-        };
+        }
+
         render () {
             this._ori = this.elem.wrapper.offsetHeight > this.elem.wrapper.offsetWidth ? 'y' : 'x';
+
             let wrapper_style = this.elem.wrapper.style;
             wrapper_style.position = 'relative';
             wrapper_style.width = wrapper_style.height = '100%';
             wrapper_style.padding = wrapper_style.margin = '0';
+
             let fill_style = this.elem.fill.style;
             fill_style.display = this._hide_fill ? 'none' : 'block';
             fill_style.position = 'absolute';
             fill_style.width = fill_style.height = '100%';
             fill_style.left = fill_style.bottom = '0';
             fill_style.padding = fill_style.margin = '0';
+
             let dot_style = this.elem.dot.style;
             dot_style.display = this._hide_dot ? 'none' : 'block';
             dot_style.position = 'absolute';
             dot_style.left = `calc(50% - ${this.elem.dot.offsetWidth / 2}px)`;
             dot_style.bottom = `calc(50% - ${this.elem.dot.offsetHeight / 2}px)`;
-            this._dot_r = (this._ori === 'x' ? this.elem.dot.offsetWidth : this.elem.dot.offsetHeight) / 2;
-            this._bar_len = (this._ori === 'x' ? this.elem.wrapper.offsetWidth : this.elem.wrapper.offsetHeight);
+
+            this._dot_r = (this._ori === 'x'
+                ? this.elem.dot.offsetWidth
+                : this.elem.dot.offsetHeight) / 2;
+            this._bar_len = (this._ori === 'x'
+                ? this.elem.wrapper.offsetWidth
+                : this.elem.wrapper.offsetHeight);
             this._set_value(this._value, 'render');
         }
+
         on (event, handler) {
-            if(typeof handler !== 'function') return;
+            if (typeof handler !== 'function') return;
             this._on[event] = handler;
         }
+
         enable () {
             this._disabled = false;
         }
+
         disable () {
             this._disabled = true;
         }
+
         hide_dot () {
             this._hide_dot = true;
             this.render();
         }
+
         show_dot () {
             this._hide_dot = false;
             this.render();
         }
+
         hide_fill () {
             this._hide_fill = true;
             this.render();
         }
+
         show_fill () {
             this._hide_fill = false;
             this.render();
         }
+
         set value (value) {
             this._set_value(value, 'set')
         }
+
         get value () {
             return this._value;
         }
+
     }
+
     return Bar;
+
 });
 
 
