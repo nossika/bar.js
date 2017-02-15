@@ -48,7 +48,7 @@ click [demo](https://nossika.github.io/bar.js/demo.html) to try it online.
 |hide_fill()|hide fill|
 |show_fill()|show fill|
 
-## Ticks
+## Tips
 
 * After `new Bar(container)`, the DOM structure would become:
 
