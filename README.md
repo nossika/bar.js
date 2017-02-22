@@ -1,6 +1,6 @@
 # bar.js
 
-Create a bar with a draggable dot or a scalable rect. And drag dot or click bar to get value.
+Create a draggable bar that could be used as range selector / progress bar / scroll bar or others.
 
 ## Examples
 
@@ -13,40 +13,73 @@ Create a bar with a draggable dot or a scalable rect. And drag dot or click bar 
 		bar.elem.fill.style.cssText = 'background: red';
 		bar.render();
 		bar.on('change', value => {
-			console.log(value)
+			console.log(value);
 		});
 	</script>
 
-click [demo](https://nossika.github.io/bar.js/demo.html) to try it online.
+Click [DEMO](https://nossika.github.io/bar.js/demo.html) to try it!
 
-## Options
+## Init options
 
-|Parameter|Type|Default|Description|
-|:-:|:-:|:-:|---|
-|default|Number|0|initial value of bar|
-|precision|Number|2|number of digits after the decimal point|
-|disabled|Boolean|false|whether value can be set by click/drag|
-|inner_mode|Boolean|false|whether dot can overflow wrapper|
+	let bar = new Bar(container, options);
+
+* **container** (required, type: HTMLElement)
+
+* **options** (optional, type: Object)
+
+	* **default** (type: Number, default: 0): initial value of bar
+	
+	* **precision** (type: Number, default: 2): number of digits after the decimal point
+	
+	* **disabled** (type: Boolean, default: false): whether value can be set by click/drag
+	
+	* **inner_mode** (type: Boolean, default: false): whether dot can overflow wrapper
 
 ## Properties
 
-|Propert|Description|
-|:-:|---|
-|elem|it returns `{dot, fill, wrapper}`, which are native DOM element, could be operated directly|
-|value|get - return current value<br>set - set new value & update views|
+	bar.elem; // returns {dot, fill, wrapper}, all of them are HTMLElement.
+
+	bar.value; // return current value;
+	bar.value = 0.6; // set value to 0.6;
 
 ## Methods
 
-|Method|Description|
-|:-:|---|
-|render()|render bar|
-|on(event, handler)|bind handler to event<br>handler takes two parameters: value, type|
-|enable()|enable bar evnets(click/drag)|
-|disable()|disable bar events(click/drag)|
-|hide_dot()|hide dot|
-|show_dot()|show dot|
-|hide_fill()|hide fill|
-|show_fill()|show fill|
+
+* **render()**
+
+	Render bar.
+
+* **on(event, callback)**
+
+	Bind callback to event.
+
+	events:
+
+	* **change** : callback(value, type)
+
+* **enable()**
+
+	Enable bar evnets(click and drag).
+
+* **disable()**
+
+	Disable bar events(click and drag).
+
+* **hide_dot()**
+
+	Hide dot Element.
+
+* **show_dot()**
+
+	Show dot Element.
+
+* **hide_fill()**
+
+	Hide fill Element.
+
+* **show_fill()**
+
+	Show fill Element.
 
 ## Tips
 
